@@ -38,11 +38,37 @@ class DosserTest {
         assertThat(outterClass.innerClass.string).isNotBlank()
     }
 
-    @Test(expected = DataGeneratorException::class)
-    fun shouldThrowWhenNotDataClass() {
-        class NonDataClass(val string: String)
+    @Test
+    fun shouldGenerateBasicTypeListClass() {
+        data class BasicListTypeClass(val list: List<Int>)
 
-        generate(NonDataClass::class)
+        val basicListTypeClass = generate(BasicListTypeClass::class)
+
+        println(basicListTypeClass)
+    }
+
+    @Test
+    fun shouldGenerateCustomTypeListClass() {
+        data class SomeClass(val int: Int)
+
+        data class CustomListTypeClass(val list: List<SomeClass>)
+
+        val customListTypeClass = generate(CustomListTypeClass::class)
+
+        println(customListTypeClass)
+    }
+
+    interface SomeInterface {}
+
+    data class SomeClass(val int: Int) : SomeInterface
+
+    @Test
+    fun shouldGenerateAnnotationTypeListClass() {
+        data class AnnotatedListTypeClass(@TestType(SomeClass::class) val list: @TestType(sdoward.com.dosser.DosserTest.SomeClass::class) List<@TestType(SomeClass::class) SomeInterface>)
+
+        val annotatedListTypeClass = generate(AnnotatedListTypeClass::class)
+
+        println(annotatedListTypeClass)
     }
 
 }
